@@ -61,7 +61,10 @@ async function verifyToken(authHeader: string): Promise<JwtPayload> {
   // TODO: Implement token verification
   // You should implement it similarly to how it was implemented for the exercise for the lesson 5
   // You can read more about how to do this here: https://auth0.com/blog/navigating-rs256-and-jwks/
-
+  if (jwt.header.alg !== 'RS256') {
+    // we are only supporting RS256 so fail if this happens.
+    throw new Error('Not RS256')
+  }
   
 
   return verify(token, jwksUrl, {algorithms: ['RS256']}) as JwtPayload

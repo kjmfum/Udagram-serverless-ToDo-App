@@ -4,25 +4,25 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 import * as middy from 'middy'
 import { cors } from 'middy/middlewares'
 
-import { getTodosForUser as getTodosForUser } from '../../businessLogic/todos'
+// import { getTodosForUser as getTodosForUser } from '../../businessLogic/todos'
 import { getUserId } from '../utils';
-import * as AWS from 'aws-sdk'
+import { getTodosForUser } from '../../businessLogic/todos';
 
 // TODO: Get all TODO items for a current user
 
-const docClient = new AWS.DynamoDB.DocumentClient()
+// const docClient = new AWS.DynamoDB.DocumentClient()
 
-const todosTable = process.env.todosTable
-const todosIndexName = process.env.TODOS_CREATED_AT_INDEX
+// const todosTable = process.env.todosTable
+// const todosIndexName = process.env.TODOS_CREATED_AT_INDEX
 
 
 export const handler = middy(
   async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     // Write your code here
-    // const userId = getUserId(event)
+    const userId = getUserId(event)
     // const todos = await getTodosForUser(userId)
 
-    const todos = getTodosForUser(event)
+    const todos = getTodosForUser(userId)
 
     return {
       statusCode: 200,
