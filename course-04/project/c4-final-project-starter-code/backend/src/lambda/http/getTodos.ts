@@ -7,6 +7,7 @@ import { cors } from 'middy/middlewares'
 // import { getTodosForUser as getTodosForUser } from '../../businessLogic/todos'
 // import { getUserId } from '../utils';
 import { getTodosForUser } from '../../businessLogic/todos';
+import { getUserId } from '../utils';
 
 // TODO: Get all TODO items for a current user
 
@@ -19,17 +20,23 @@ import { getTodosForUser } from '../../businessLogic/todos';
 export const handler = middy(
   async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     // Write your code here
-    // const userId = getUserId(event)
-    // const todos = await getTodosForUser(userId)
-    console.log(event);
+    const userId = getUserId(event)
+    const todos = await getTodosForUser(userId)
+    console.log(`Getting stuff 1: ${todos}`);
+    console.log(`Getting stuff 2: ${todos[0].name}`);
+    console.log(`Getting stuff 3: ${todos[0].userId}`);
+    console.log(`Getting stuff 4: ${todos[0]["name"]}`);
+    
     // google-oauth2|101675378332843725088
     // const todos = getTodosForUser(userId)
-    const todos = getTodosForUser("google-oauth2|101675378332843725088")
+    // const todos = getTodosForUser("google-oauth2|101675378332843725088")
     
     return {
       statusCode: 200,
       body: JSON.stringify({
-        items: todos
+        items: [
+                ...todos
+        ]
       })
     }
 
