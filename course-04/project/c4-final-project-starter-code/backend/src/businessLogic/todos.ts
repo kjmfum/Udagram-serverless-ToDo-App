@@ -18,16 +18,18 @@ export async function createTodoForUser( userId: string, createTodoRequest : Cre
 
         const todItemId = uuid.v4()
 
-        return await todoAccess.createTodo({
+        const item : TodoItem  = await todoAccess.createTodo({
             userId: userId,
             todoId: todItemId,
             createdAt: new Date().toISOString(),
             name: createTodoRequest.name,
             dueDate: createTodoRequest.dueDate,
             done: false,
-            // attachmentUrl?: "https://assetsnffrgf-a.akamaihd.net/assets/m/2021006/univ/art/2021006_univ_cnt_1_md.jpg"
+            attachmentUrl: null
           }
         )
+
+        return item;
 
         
         }

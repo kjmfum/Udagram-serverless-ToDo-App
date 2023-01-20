@@ -6,6 +6,7 @@ import { CreateTodoRequest } from '../../requests/CreateTodoRequest'
 import { getUserId } from '../utils';
 // import * as AWS from 'aws-sdk'
 import { createTodoForUser } from '../../businessLogic/todos';
+// import { TodoItem } from '../../models/TodoItem'
 
 
 
@@ -19,18 +20,22 @@ export const handler = middy(
     // TODO: Implement creating a new TODO item
     const userId = getUserId(event);
 
-    const newTodoItem = createTodoForUser(userId, newTodo)
+    const item = await createTodoForUser(userId, newTodo)
 
 
   // await docClient.put({
   //   TableName: todosTable,
   //   Item: newTodoItem
   // }).promise();
-
-
     return {
       statusCode: 201,
-      body: JSON.stringify(newTodoItem)
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
+      },
+      body: JSON.stringify({
+        item: item
+      })
     }
   }
 )
