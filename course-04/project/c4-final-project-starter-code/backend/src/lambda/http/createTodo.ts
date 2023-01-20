@@ -4,14 +4,14 @@ import * as middy from 'middy'
 import { cors } from 'middy/middlewares'
 import { CreateTodoRequest } from '../../requests/CreateTodoRequest'
 import { getUserId } from '../utils';
-import * as AWS from 'aws-sdk'
+// import * as AWS from 'aws-sdk'
 import { createTodoForUser } from '../../businessLogic/todos';
 
 
 
 
-const todosTable = process.env.GROUPS_TABLE;
-const docClient = new AWS.DynamoDB.DocumentClient();
+// const todosTable = process.env.GROUPS_TABLE;
+// const docClient = new AWS.DynamoDB.DocumentClient();
 
 export const handler = middy(
   async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
@@ -22,10 +22,10 @@ export const handler = middy(
     const newTodoItem = createTodoForUser(userId, newTodo)
 
 
-  await docClient.put({
-    TableName: todosTable,
-    Item: newTodoItem
-  }).promise();
+  // await docClient.put({
+  //   TableName: todosTable,
+  //   Item: newTodoItem
+  // }).promise();
 
 
     return {

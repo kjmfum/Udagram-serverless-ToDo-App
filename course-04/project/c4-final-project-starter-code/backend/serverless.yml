@@ -1,6 +1,6 @@
 # TODO: Change the name of the org 
-org: justbabej
-app: serverless-todo-app
+# org: justbabej
+# app: serverless-todo-app
 service: serverless-todo-app
 
 plugins:
@@ -26,7 +26,7 @@ provider:
   environment:
     TODOS_TABLE: Todos-${self:provider.stage}
     TODOS_CREATED_AT_INDEX: CreatedAtIndex
-    ATTACHMENT_S3_BUCKET: serverless-c4-todo-images-${self:provider.stage}
+    ATTACHMENT_S3_BUCKET: serverless-projectj1-todo-images-${self:provider.stage}
     SIGNED_URL_EXPIRATION: 300
 
   logs:
@@ -61,6 +61,7 @@ functions:
     iamRoleStatements:
       - Effect: Allow
         Action:
+          - dynamodb:Scan
           - dynamodb:Query
           - dynamodb:GetItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE} 
@@ -148,50 +149,49 @@ resources:
     GatewayResponseDefault4XX:
       Type: AWS::ApiGateway::GatewayResponse
       Properties:
-        Properties:
-          ResponseParameters:
-            gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
-            gatewayresponse.header.Access-Control-Allow-Headers: "'Content-Type, X-Amz-Date, Authorization'"
-            gatewayresponse.header.Access-Control-Allow-Methods: "'GET, OPTIONS, POST'"
-          ResponseType: DEFAULT_4XX
-          RestApiId:
-            Ref: 'ApiGatewayRestApi'
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'Content-Type, X-Amz-Date, Authorization'"
+          gatewayresponse.header.Access-Control-Allow-Methods: "'GET, OPTIONS, POST'"
+        ResponseType: DEFAULT_4XX
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'
 
-      RequestBodyValidator:
-        Type: AWS::ApiGateway::RequestValidator
-        Properties:
-          Name: 'request-body-validator'
-          RestApiId:
-            Ref: ApiGatewayRestApi
-          ValidateRequestBody: true
-          ValidateRequestParameters: false    
+    RequestBodyValidator:
+      Type: AWS::ApiGateway::RequestValidator
+      Properties:
+        Name: 'request-body-validator'
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        ValidateRequestBody: true
+        ValidateRequestParameters: false    
     # TODO: Create a DynamoDB table with local secondary index and a composite key
     TodosTable:
       Type: AWS::DynamoDB::Table
-        Properties:
-          AttributeDefinitions:
-            - AttributeName: userId
-              AttributeType: S
-            - AttributeName: todoId
-              AttributeType: S
-            - AttributeName: createdAt
-              AttributeType: S
-          KeySchema:
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: userId
+            AttributeType: S
+          - AttributeName: todoId
+            AttributeType: S
+          - AttributeName: createdAt
+            AttributeType: S
+        KeySchema:
+          - AttributeName: userId
+            KeyType: HASH
+          - AttributeName: todoId
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:provider.environment.TODOS_TABLE}
+        LocalSecondaryIndexes:
+          - IndexName: ${self:provider.environment.TODOS_CREATED_AT_INDEX}
+            KeySchema:
             - AttributeName: userId
               KeyType: HASH
-            - AttributeName: todoId
+            - AttributeName: createdAt
               KeyType: RANGE
-          BillingMode: PAY_PER_REQUEST
-          TableName: ${self:provider.environment.TODOS_TABLE}
-          LocalSecondaryIndexes:
-            - IndexName: ${self:provider.environment.TODOS_CREATED_AT_INDEX}
-              KeySchema:
-              - AttributeName: userId
-                KeyType: HASH
-              - AttributeName: createdAt
-                KeyType: RANGE
-              Projection:
-                ProjectionType: ALL
+            Projection:
+              ProjectionType: ALL
 
 
     # TODO: Complete the bucket properties below. 
