@@ -18,8 +18,13 @@ export const handler = middy(
     const newTodo: CreateTodoRequest = JSON.parse(event.body)
     // TODO: Implement creating a new TODO item
     const userId = getUserId(event);
+ 
 
     const newTodoItem = createTodoForUser(userId, newTodo)
+    console.log(`Getting stuff 1: ${newTodoItem}`);
+    console.log(`Getting stuff 2: ${newTodoItem[0].name}`);
+    console.log(`Getting stuff 3: ${newTodoItem[0].userId}`);
+    console.log(`Getting stuff 4: ${newTodoItem[0]["name"]}`);
 
 
   // await docClient.put({
