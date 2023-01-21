@@ -2,7 +2,9 @@
 import * as uuid from 'uuid'
 import { TodoAccess } from "../dataLayer/todosAccess";
 import { TodoItem } from "../models/TodoItem";
+import { TodoUpdate } from '../models/TodoUpdate';
 import { CreateTodoRequest } from "../requests/CreateTodoRequest";
+import { UpdateTodoRequest } from '../requests/UpdateTodoRequest';
 
 
 const todoAccess = new TodoAccess()
@@ -13,11 +15,8 @@ export async function getTodosForUser(userId: string) : Promise<TodoItem[]> {
     
 }
 
-export async function createTodoForUser( userId: string, createTodoRequest : CreateTodoRequest) : Promise<TodoItem> 
-   {
-
+export async function createTodoForUser( userId: string, createTodoRequest : CreateTodoRequest) : Promise<TodoItem> {
         const todItemId = uuid.v4()
-
         const item : TodoItem  = await todoAccess.createTodo({
             userId: userId,
             todoId: todItemId,
@@ -28,8 +27,13 @@ export async function createTodoForUser( userId: string, createTodoRequest : Cre
             attachmentUrl: null
           }
         )
-
         return item;
+}
 
-        
-        }
+export async function updateTodo( userId: string, todoId: string, updatedTodo: UpdateTodoRequest) : Promise<TodoUpdate> {
+    return todoAccess.updateTodo(userId, todoId, updatedTodo)
+}
+
+export async function deleteTodo( userId: string, todoId: string) : Promise<void> {
+  return todoAccess.deleteTodo(userId, todoId)
+}

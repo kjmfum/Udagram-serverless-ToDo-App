@@ -2,6 +2,7 @@
 import * as AWS from "aws-sdk";
 import { DocumentClient } from "aws-sdk/clients/dynamodb";
 import { TodoItem } from "../models/TodoItem";
+import { TodoUpdate } from "../models/TodoUpdate";
 
 export class TodoAccess {
 
@@ -26,28 +27,6 @@ export class TodoAccess {
           console.log(`My results ${userId}`);
           
           return items as TodoItem[];
-      //      const items = [
-      //   {
-      //     "userId": "google-oauth2|101675378332843725088",
-      //     "todoId": "123",
-      //     "createdAt": "2019-07-27T20:01:45.424Z",
-      //     "name": "Buy milk",
-      //     "dueDate": "2019-07-29T20:01:45.424Z",
-      //     "done": false,
-      //     "attachmentUrl": "http://example.com/image.png"
-      //     },
-      //     {
-      //       "userId": "google-oauth2|101675378332843725088",
-      //       "todoId": "456",
-      //       "createdAt": "2019-07-27T20:01:45.424Z",
-      //       "name": "Send a letter",
-      //       "dueDate": "2019-07-29T20:01:45.424Z",
-      //       "done": true,
-      //       "attachmentUrl": "http://example.com/image.png"
-      //       },
-      // ]
-
-      // return items as TodoItem[]
     }
 
     async createTodo(todo: TodoItem) : Promise<TodoItem> {
@@ -58,6 +37,39 @@ export class TodoAccess {
       }).promise();
 
       return todo
+    }
+
+    async updateTodo(userId: string, todoId: string, todosUpdate: TodoUpdate) : Promise<TodoUpdate> {
+     await this.docClient.update({
+        TableName: this.todosTable,
+        Key: {
+          userId,
+          todoId
+        },
+        UpdateExpression: 'set #name = :name, dueDate =:dueDate, done = :done',
+        ExpressionAttributeNames: {
+           '#name' : 'name'
+        },
+        ExpressionAttributeValues : {
+          ':name' : todosUpdate.name,
+          ':dueDate' : todosUpdate.dueDate,
+          ':done' : todosUpdate.done,
+        }
+      }).promise()
+
+      console.log(`Updated info: ${todosUpdate}`);
+      
+      return todosUpdate
+    }
+
+    async deleteTodo(userId: string, todoId: string) : Promise<void> {
+
+        await this.docClient.delete({
+          TableName:this.todosTable,
+          Key: {userId,
+            todoId}
+        }).promise()
+      
     }
 
 }
