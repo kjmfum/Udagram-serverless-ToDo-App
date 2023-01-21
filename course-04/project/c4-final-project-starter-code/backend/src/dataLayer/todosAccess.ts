@@ -72,4 +72,18 @@ export class TodoAccess {
       
     }
 
+    async getUploadUrl(userId: string, todoId: string) : Promise<string> {
+      const s3 = new AWS.S3({
+        signatureVersion: 'v4'
+     })
+
+    const uploadUrl = s3.getSignedUrl('putObject', {
+        Bucket: process.env.ATTACHMENT_S3_BUCKET,
+        Key: {todoId,userId},
+        Expires: process.env.ATTACHMENT_S3_BUCKET
+    })
+
+    return uploadUrl;
+    }
+
 }

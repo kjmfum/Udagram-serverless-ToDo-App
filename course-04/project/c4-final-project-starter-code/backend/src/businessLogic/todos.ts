@@ -37,3 +37,8 @@ export async function updateTodo( userId: string, todoId: string, updatedTodo: U
 export async function deleteTodo( userId: string, todoId: string) : Promise<void> {
   return todoAccess.deleteTodo(userId, todoId)
 }
+
+export async function getUploadUrl(userId: string, todoId: string) {
+  return todoAccess.getUploadUrl(userId, todoId)
+}
+
