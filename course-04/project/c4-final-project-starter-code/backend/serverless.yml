@@ -28,6 +28,7 @@ provider:
     TODOS_CREATED_AT_INDEX: CreatedAtIndex
     ATTACHMENT_S3_BUCKET: serverless-projectj1-todo-images-${self:provider.stage}
     SIGNED_URL_EXPIRATION: 300
+    AUTH0_URL: "https://dev-4wg778h3zio6lges.us.auth0.com/.well-known/jwks.json"
 
   logs:
     # Enable API Gateway logs
