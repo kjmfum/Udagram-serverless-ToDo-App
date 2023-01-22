@@ -6,6 +6,7 @@ import { CreateTodoRequest } from '../../requests/CreateTodoRequest'
 import { getUserId } from '../utils';
 // import * as AWS from 'aws-sdk'
 import { createTodoForUser } from '../../businessLogic/todos';
+// import { TodoItem } from '../../models/TodoItem'
 
 
 
@@ -20,22 +21,32 @@ export const handler = middy(
     const userId = getUserId(event);
  
 
+<<<<<<< HEAD
     const newTodoItem = createTodoForUser(userId, newTodo)
     console.log(`Getting stuff 1: ${newTodoItem}`);
     console.log(`Getting stuff 2: ${newTodoItem[0].name}`);
     console.log(`Getting stuff 3: ${newTodoItem[0].userId}`);
     console.log(`Getting stuff 4: ${newTodoItem[0]["name"]}`);
+||||||| merged common ancestors
+    const newTodoItem = createTodoForUser(userId, newTodo)
+=======
+    const item = await createTodoForUser(userId, newTodo)
+>>>>>>> CreateTodo
 
 
   // await docClient.put({
   //   TableName: todosTable,
   //   Item: newTodoItem
   // }).promise();
-
-
     return {
       statusCode: 201,
-      body: JSON.stringify(newTodoItem)
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
+      },
+      body: JSON.stringify({
+        item: item
+      })
     }
   }
 )
