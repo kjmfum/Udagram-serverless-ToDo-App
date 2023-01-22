@@ -1,6 +1,7 @@
 
 import * as uuid from 'uuid'
 import { TodoAccess } from "../dataLayer/todosAccess";
+import { Attachment } from '../helpers/attachmentUtils';
 import { TodoItem } from "../models/TodoItem";
 import { TodoUpdate } from '../models/TodoUpdate';
 import { CreateTodoRequest } from "../requests/CreateTodoRequest";
@@ -38,7 +39,11 @@ export async function deleteTodo( userId: string, todoId: string) : Promise<void
   return todoAccess.deleteTodo(userId, todoId)
 }
 
-export async function getUploadUrl(userId: string, todoId: string) {
-  return todoAccess.getUploadUrl(userId, todoId)
+export async function getUploadUrl(userId: string, todoId: string, attachmentId: string) {
+  const attachmentData = await Attachment(attachmentId)
+  const fileUrl =  await todoAccess.getUploadUrl(userId, todoId, attachmentData.uploadUrl)
+  console.log(fileUrl);
+  
+  return attachmentData.putObject
 }
 
